@@ -51,7 +51,7 @@ class parse_fund(object):
         if page('div', class_='fundDetail-tit').__len__() > 0:
             fund_name = page('div', class_='fundDetail-tit')[0]
             fund_info.name = fund_name.get_text()
-            print(fund_name)
+        
 
             # 基金信息
             fund_info_item = page('div', class_='dataOfFund')
@@ -64,16 +64,12 @@ class parse_fund(object):
                 fund_z = '-' + fund_zd[0](id='gz_gszze')[0].text
 
             fund_d = fund_zd[0](id='gz_gszzl')[0].text
-            print(fund_z, fund_d)
-            print(fund_info.name)
             fund_info.set_raise_and_per(fund_z, fund_d)
-            print(fund_info.rise_fall())
 
             # 基金走势图
             # <div class="estimatedchart hasLoading"> <img src="http://j4.dfcfw.com/charts/pic6/000254.png" alt="">   </div>
             picurl = page('div', class_='estimatedchart hasLoading')[0].img.get('src')
             fund_info.pic = picurl
-            print(picurl)
             return fund_info
         else:
             fund_info.name = '不存在的基金'
