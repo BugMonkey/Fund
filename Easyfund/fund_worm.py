@@ -80,7 +80,4 @@ class parse_fund(object):
             return fund_info
 
 
-if __name__ == "__main__":
-    code = '000545'
-    fund = parse_fund(code)
-    fund.start_parse()
+

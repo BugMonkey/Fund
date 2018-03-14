@@ -9,6 +9,7 @@ class fund_window(wx.Frame):
         wx.Frame.__init__(self, None, -1, "基金网站的数据", size=(450, 400))
         self.panel = wx.Panel(self, -1)
         self.show_textctr()
+        self.code = ''
 
     def show_pic(self, pic):
         # 网络图片地址
@@ -21,6 +22,10 @@ class fund_window(wx.Frame):
 
         self.l1 = wx.StaticText(self.panel, pos=(0, 0), label="基金代码 ：")
         self.t1 = wx.TextCtrl(self.panel, pos=(100, 0), style=wx.TE_PROCESS_ENTER)
+        self.btn_refresh = wx.Button(self.panel, pos=(330, 0), label='刷新')
+        self.btn_refresh.Bind(wx.EVT_BUTTON, self.OnClicked)
+        self.btn_confirm = wx.Button(self.panel, pos=(230, 0), label='确认')
+        self.btn_confirm.Bind(wx.EVT_BUTTON, self.OnClicked)
         self.t1.Bind(wx.EVT_TEXT_ENTER, self.OnEnterPressed)
         self.lname = wx.StaticText(self.panel, pos=(0, 30), label="基金名称 ：")
         self.tname = wx.StaticText(self.panel, pos=(100, 30))
@@ -29,11 +34,32 @@ class fund_window(wx.Frame):
         self.tper = wx.StaticText(self.panel, pos=(200, 60))
         self.bmp = wx.StaticBitmap(parent=self.panel, pos=(0, 80))
 
+    def OnClicked(self, event):
+        if event.GetString == '刷新':
+            if not self.code == '':
+                self.startParse()
+            else:
+                dlg = wx.MessageBox("基金代码不能为空", "提示", wx.OK | wx.ICON_INFORMATION)
+                if dlg.ShowModal() == wx.ID_OK:
+                    dlg.Destroy()
+        else:
+            if self.t1.GetValue() == '':
+                dlg = wx.MessageBox("基金代码不能为空", "提示", wx.OK | wx.ICON_INFORMATION)
+
+            else:
+                self.code = self.t1.GetValue()
+                self.startParse()
+
     def OnEnterPressed(self, event):
-        parser = fw(event.GetString())
-        fund_info = parser.start_parse()
-        self.show_result(fund_info)
-        self.panel.Refresh()
+        self.code = event.GetString()
+        self.startParse()
+
+    def startParse(self):
+        if not self.code == '':
+            parser = fw(self.code)
+            fund_info = parser.start_parse()
+            self.show_result(fund_info)
+            self.panel.Refresh()
 
     def show_result(self, info):
         if info.name:
